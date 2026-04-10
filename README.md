@@ -1,158 +1,198 @@
-# 🚀 AutoGen vs CrewAI vs LangGraph  
-### With Architecture Diagrams + Code Examples
+#  AutoGen vs CrewAI vs LangGraph  
+### Complete Guide with Benchmarks, Diagrams & Code Examples
 
 ---
 
-## 📌 Overview
+## 👋 Welcome
 
-This repository compares three powerful AI agent frameworks:
+This repository compares three popular AI agent frameworks:
 
-- 🔹 AutoGen  
-- 🔹 CrewAI  
-- 🔹 LangGraph  
+- AutoGen  
+- CrewAI  
+- LangGraph  
 
----
-
-## 🧠 Architecture Diagrams
-
-### 🗣️ AutoGen (Conversation Flow)
-
-User
-  ↓
-Agent A ↔ Agent B ↔ Agent C
-  ↓
-Final Response
-
-👉 Agents communicate via messages dynamically.
+with real-world insights, architecture, and benchmarks.
 
 ---
 
-### 👥 CrewAI (Role-Based Pipeline)
+## 🧠 Quick Summary
 
-User Task
-   ↓
-[Researcher] → [Writer] → [Reviewer]
-   ↓
-Final Output
-
-👉 Structured pipeline with defined roles.
+| Framework | Best For | Complexity | Control |
+|----------|---------|-----------|--------|
+| AutoGen | Conversational agents | Medium | Medium |
+| CrewAI | Fast workflows | Easy | Low |
+| LangGraph | Production systems | Hard | Very High |
 
 ---
 
-### 🔗 LangGraph (Workflow Graph)
+## 🏗️ Architecture (Mermaid)
 
-        ┌──────────┐
-        │  Planner │
-        └────┬─────┘
-             ↓
-        ┌──────────┐
-        │   Tool   │
-        └────┬─────┘
-             ↓
-        ┌──────────┐
-        │ Validator│
-        └────┬─────┘
-             ↓
-        (Loop / Retry if needed)
+### AutoGen
 
-👉 Explicit control over flow and state.
+```mermaid
+graph LR
+    U[User] --> A[Agent A]
+    A --> B[Agent B]
+    B --> C[Agent C]
+    C --> R[Response]
+```
+
+### CrewAI
+
+```mermaid
+graph TD
+    U[Task] --> R[Researcher]
+    R --> W[Writer]
+    W --> E[Editor]
+    E --> O[Output]
+```
+
+### LangGraph
+
+```mermaid
+graph TD
+    I[Input] --> P[Planner]
+    P --> T[Tool]
+    T --> V[Validator]
+    V -->|Retry| P
+    V -->|Done| O[Output]
+```
 
 ---
 
-## ⚙️ Code Examples
+## ⚙️ Feature Comparison
+
+| Feature | AutoGen | CrewAI | LangGraph |
+|--------|--------|--------|-----------|
+| Multi-Agent | ✅ | ✅ | ✅ |
+| Workflow Control | ❌ | ⚠️ | ✅ |
+| State Handling | ❌ | ⚠️ | ✅ |
+| Debugging | ❌ | ✅ | ⚠️ |
+| Production Ready | ⚠️ | ⚠️ | ✅ |
 
 ---
 
-### 🔹 AutoGen Example
+## 💻 Code Examples
+
+### AutoGen
 
 ```python
 from autogen import AssistantAgent, UserProxyAgent
 
 assistant = AssistantAgent("assistant")
-user_proxy = UserProxyAgent("user")
+user = UserProxyAgent("user")
 
-user_proxy.initiate_chat(
-    assistant,
-    message="Write a Python function to calculate factorial"
-)
+user.initiate_chat(assistant, message="Explain AI agents")
 ```
 
 ---
 
-### 🔹 CrewAI Example
+### CrewAI
 
 ```python
 from crewai import Agent, Task, Crew
 
-researcher = Agent(role="Researcher", goal="Find information")
-writer = Agent(role="Writer", goal="Write article")
+agent = Agent(role="Writer", goal="Write blog")
+task = Task(description="Blog on AI")
 
-task = Task(description="Write blog on AI agents")
-
-crew = Crew(
-    agents=[researcher, writer],
-    tasks=[task]
-)
-
-result = crew.run()
-print(result)
+crew = Crew(agents=[agent], tasks=[task])
+print(crew.run())
 ```
 
 ---
 
-### 🔹 LangGraph Example
+### LangGraph
 
 ```python
 from langgraph.graph import StateGraph
 
-def step1(state):
+def step(state):
     return {"data": state["data"] + " processed"}
 
 graph = StateGraph(dict)
-graph.add_node("step1", step1)
-graph.set_entry_point("step1")
+graph.add_node("step", step)
+graph.set_entry_point("step")
 
 app = graph.compile()
-result = app.invoke({"data": "input"})
-print(result)
+print(app.invoke({"data": "input"}))
 ```
 
 ---
 
-## ⚖️ Pros & Cons
+## 📊 Benchmark Comparison
 
-### AutoGen
-✅ Flexible conversations  
-❌ Hard to debug  
+> ⚠️ Note: Benchmarks are indicative and vary based on model, infra, and design.
 
-### CrewAI
-✅ Easy to use  
-❌ Limited flexibility  
+### 🔹 Latency (Response Time)
 
-### LangGraph
-✅ Full control  
-❌ Complex  
+| Framework | Avg Latency |
+|----------|------------|
+| AutoGen | ⏱️ High (multi-turn conversations) |
+| CrewAI | ⚡ Medium (sequential tasks) |
+| LangGraph | ⚡ Low–Medium (optimized workflows) |
+
+👉 Insight:  
+- AutoGen is slower due to multiple agent conversations  
+- LangGraph is faster due to controlled execution  
+
+---
+
+### 🔹 Cost (LLM Token Usage)
+
+| Framework | Cost Efficiency |
+|----------|----------------|
+| AutoGen | 💸 High cost |
+| CrewAI | 💰 Moderate |
+| LangGraph | 💰 Low–Optimized |
+
+👉 Insight:  
+- AutoGen consumes more tokens (multi-agent chats)  
+- LangGraph minimizes redundant calls  
+
+---
+
+### 🔹 Performance (Reliability & Accuracy)
+
+| Framework | Performance |
+|----------|------------|
+| AutoGen | 🧠 High reasoning |
+| CrewAI | ⚖️ Balanced |
+| LangGraph | 🎯 High reliability |
+
+👉 Insight:  
+- AutoGen excels in reasoning tasks  
+- LangGraph excels in deterministic workflows  
+
+---
+
+### 🔹 Scalability
+
+| Framework | Scalability |
+|----------|------------|
+| AutoGen | ⚠️ Medium |
+| CrewAI | ⚠️ Medium |
+| LangGraph | 🚀 High |
 
 ---
 
 ## 🎯 When to Use What
 
-| Use Case | Framework |
-|---------|----------|
-| Research Agents | AutoGen |
-| Content Pipelines | CrewAI |
-| Production AI Systems | LangGraph |
+| Use Case | Best Framework |
+|---------|--------------|
+| AI Research Agent | AutoGen |
+| Content Automation | CrewAI |
+| RAG / Enterprise AI | LangGraph |
 
 ---
 
-## 🔥 Final Recommendation
+## 🔥 Final Verdict
 
-- Beginner → CrewAI  
-- Intermediate → AutoGen  
-- Advanced → LangGraph  
+- AutoGen → Best for reasoning  
+- CrewAI → Best for simplicity  
+- LangGraph → Best for production  
 
 ---
 
-## ⭐ Contribute
+## ⭐ Contributing
 
-Feel free to improve this repo!
+PRs welcome!
